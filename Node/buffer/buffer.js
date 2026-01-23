@@ -1,0 +1,5 @@
+const buffer = Buffer.from('hello', 'utf-8')
+console.log(buffer)
+const hexBuffer = Buffer.from(buffer, 'hex')
+console.log(hexBuffer)
+console.log(hexBuffer.toString())

@@ -90,6 +90,23 @@ app.patch('/api/v1/tours/:id', (req, res) => {
             }
         })
     })
+})
+
+// Route to delete tour
+app.delete('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id * 1
+
+    const tour = tours.find(elem => elem.id === id)
+    if(!tour) return res.status(404).json({ success: false, message: "No tour found" })
+
+    const updatedTour = tours.filter(elem => elem.id !== id)
+
+    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(updatedTour), err => {
+        res.status(204).json({
+            success: true,
+            message: "Deleted successfully"
+        })
+    })
 
 })
 

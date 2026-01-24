@@ -61,6 +61,38 @@ app.get("/api/v1/tours/:id/:x{/:y}", (req, res) => {
     res.send("done")
 })
 
+
+// We have to methods to UPDATE the data
+// PUT - it is used when we expect that our application recieves the entire new updated object.
+// PATCH - it is used when we only expect the properties that should actually be updated on the object.
+// Route to update tour
+app.patch('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id * 1
+    const { name, duration } = req.body
+
+    if(id >= tours.length) return res.status(404).json({ success: false, message: "Invalid id" })
+
+    const tour = tours.find(elem => elem.id === id)
+    if(!tour) return res.status(404).json({ success: false, message: "No tour found" })
+
+    tour.name = name
+    tour.duration = duration
+    tours.map(elem => {
+        if(elem.id === id){
+            elem = tour     //Change the main tour in folder with updated tour
+        }
+    })
+    fs.writeFile('./dev-data/data/tours-simple.json', JSON.stringify(tours), err => {
+        res.status(200).json({
+            success: true,
+            data: {
+                updatedTour: tour
+            }
+        })
+    })
+
+})
+
 app.listen(3000, () => {
     console.log("App is listening to requests on port 3000.")
 })

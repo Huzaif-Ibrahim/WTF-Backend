@@ -94,3 +94,18 @@ REMEMBER, we used 3 methods to make/define routes.
 2.Using app.route - app.route(commonRoute).get(getController).post(postController)
 3.app.use - explained in 16th video.
 
+video 17: Better file structure
+-- routes folder to store routes i.e. tourRoutes.js stores tourRouter = express.Router
+   controllers folder to store handler functions of routes which will be imported by route files.
+
+video 18: Param Middleware
+-- It is used to check the param and run that controller only if that param is present in the url. Basically, it is a middleware that will only run before the controller which contain the specified param in it's url
+
+video 19: Chaining Multiple Middleware Functions
+-- When we want to run a middleware before a function only to a specific route then we an write the middleware function before the main controller.
+i.e. tourRouter.route('/').get(getTours).post(middleware, addTour)
+In the above code, when we request POST request at '/' then first the middleware will run then addTour will run.
+
+video 20: Serving Static Files
+-- If we have public folder and in that some html and imgs then we can't access then through soeifying route in chrome, we need to first use a middleware called express.static(route of files) and then we can access files diretly from browser or requesting.
+i.e. app.use(express.static('./public')) and in browser localhost:3000/overview.html, we will get html folder.

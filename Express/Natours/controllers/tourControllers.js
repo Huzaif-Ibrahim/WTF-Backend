@@ -1,6 +1,24 @@
 import fs from 'fs'
 const tours = JSON.parse(fs.readFileSync(`./dev-data/data/tours-simple.json`))
 
+export const checkId = (req, res, next, val) => {
+    if (val > tours.length - 1) {
+        return res.json({
+            success: false,
+            message: "Invalid Id"
+        })
+    }
+    next()
+}
+
+export const checkBody = (req, res, next) => {
+    const { name, price } = req.body
+
+    if(!name || !price) return res.status(400).json({ success:false, message: "Name or Price is not available." })
+
+    next()
+}
+
 export const getAllTours = (req, res) => {
     // console.log(req.requestedTime)
 
@@ -30,16 +48,13 @@ export const addTour = (req, res) => {
 
 export const getTour = (req, res) => {
     const id = req.params.id
-    console.log(typeof(id)) //String
+    console.log(typeof (id)) //String
     const tour = tours.find(elem => elem.id == id)
 
-    tour ? res.status(200).json({
+    res.status(200).json({
         success: true,
         requestedAt: req.requestedTime,
-        data : { tour }
-    }) : res.status(404).json({
-        success: false,
-        message: "No data found with that id"
+        data: { tour }
     })
 }
 
@@ -47,15 +62,13 @@ export const updateTour = (req, res) => {
     const id = req.params.id * 1
     const { name, duration } = req.body
 
-    if(id >= tours.length) return res.status(404).json({ success: false, message: "Invalid id" })
-
     const tour = tours.find(elem => elem.id === id)
-    if(!tour) return res.status(404).json({ success: false, message: "No tour found" })
+    if (!tour) return res.status(404).json({ success: false, message: "No tour found" })
 
     tour.name = name
     tour.duration = duration
     tours.map(elem => {
-        if(elem.id === id){
+        if (elem.id === id) {
             elem = tour     //Change the main tour in folder with updated tour
         }
     })
@@ -73,7 +86,7 @@ export const deleteTour = (req, res) => {
     const id = req.params.id * 1
 
     const tour = tours.find(elem => elem.id === id)
-    if(!tour) return res.status(404).json({ success: false, message: "No tour found" })
+    if (!tour) return res.status(404).json({ success: false, message: "No tour found" })
 
     const updatedTour = tours.filter(elem => elem.id !== id)
 

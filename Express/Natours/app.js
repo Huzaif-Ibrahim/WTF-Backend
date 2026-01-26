@@ -8,6 +8,7 @@ const app = express()
 // Middlewares
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(express.static('./public'))
 
 // This function will be called before the response of all the routes that are defined after this.
 // own MIDDLEWARES

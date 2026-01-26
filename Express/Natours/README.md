@@ -10,7 +10,7 @@ video 4: Setting up express and Basic Routing.
 video 5: APIs and RESTful API design.
 -- API: Application programming interface. A piece of software that can be used by another piece of software, in order to allow applications to talk to each other.
 
--- REST(Representational States Transfer): Way of building web APIs in a logical way making then easy to consume.
+-- REST(Representational States Transfer): Way of building web APIs in a logical way making them easy to consume.
 
 Principles of REST API:
     1. Seperate API into logical resource.
@@ -25,7 +25,7 @@ Principles of REST API:
     3. Use HTTP methods.
     -- For above examples for bad resource we can use-
     /getTour --> GET /tours
-                 GET /tours?:id
+                 GET /tours/:id
     /addNewTour --> POST /tours
     /updateTour --> PUT /tours/:id (when whole new object is recieved)
                     PATCH /tours/:id (when only changes of an object is available)
@@ -37,7 +37,7 @@ Principles of REST API:
     -- send response in json but if we add success status too then it is called as Jsend, and usually referred as best practice. res.send({ success: true, data: { tours } })
 
     5. Be stateless.
-    -- Stateless RESTfull API: All states should be handelled on the client side. This means that each request must contain al the information necessary to process a certain response.
+    -- Stateless RESTfull API: All states should be handelled on the client side. This means that each request must contain all the information necessary to process a certain response.
     The server should not have to remember the previous request.
     Ex. of state: LoggedIn, CurrentPage etc server should nto remember this, client should request with these details included.
 
@@ -66,7 +66,7 @@ video 10: handeling delete Requests.
 
 video 11: Refactoring Our Routes.
 1.Made variables that stores the function of each route. ex. const getAllRoutes = (req, res) => {}
-2.Used app.route, we can use this when there are exact same routes but with different methods. Int his code we used - app.route('/api/v1/tours).get(getAllUsers).post(AddTour)
+2.Used app.route, we can use this when there are exact same routes but with different methods. In this code we used - app.route('/api/v1/tours).get(getAllUsers).post(AddTour)
 app.route('/api/v1/tours/:id').get(getTour).patch(updateTour).delete(deleteTour)
 
 
@@ -74,6 +74,7 @@ video 12(IMP): Middleware and Request-Response cycle.
 1.It starts with incoming requests with req-res object.
 2.Executes the middlewares that are in middleware stack.
 3.Finally send the response to finish the cycle.
+(Every controller(final handler/function which sends res.send after all the middlewares) is technically a middleware, but not every middleware is a controller.)
 
 video 13: Creating Our own Middlewares.
 video 14: Using third-party middlewares.

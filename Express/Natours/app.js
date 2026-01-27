@@ -8,20 +8,22 @@ const app = express()
 // Middlewares
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(express.static('./public'))
+// app.use(express.static('./public'))
 
-// This function will be called before the response of all the routes that are defined after this.
-// own MIDDLEWARES
-app.use((req, res, next) => {
-    console.log("Hellow from middleware👋🏻")
-    next()
-})
-app.use((req, res, next) => {
-    req.requestedTime = new Date().toISOString()
-    next()
-})
-// Third-party MIDDLEWARE
-app.use(morgan('dev'))
+if (process.env.NODE_ENV === 'production') {
+    // This function will be called before the response of all the routes that are defined after this.
+    // own MIDDLEWARES
+    app.use((req, res, next) => {
+        console.log("Hellow from middleware👋🏻")
+        next()
+    })
+    app.use((req, res, next) => {
+        req.requestedTime = new Date().toISOString()
+        next()
+    })
+    // Third-party MIDDLEWARE
+    app.use(morgan('dev'))
+}
 
 // Middleware to use ROUTER, and also this is called as MOUNTING OF ROUTER
 app.use('/api/v1/tours', tourRouter) // for '/api/v1/tours' we apply tourRouter middleware

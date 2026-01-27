@@ -109,3 +109,78 @@ In the above code, when we request POST request at '/' then first the middleware
 video 20: Serving Static Files
 -- If we have public folder and in that some html and imgs then we can't access then through soeifying route in chrome, we need to first use a middleware called express.static(route of files) and then we can access files diretly from browser or requesting.
 i.e. app.use(express.static('./public')) and in browser localhost:3000/overview.html, we will get html folder.
+
+video 21: Environment variables
+-- Environment variables are key–value settings provided to a program by the operating system to control how the program behaves, without changing its code.
+• process → Core Node.js object (no import needed)
+• process.env → Stores all environment variables (global)
+
+WHY ENV VARIABLES?
+• Control app behavior without changing code
+• Separate config from logic
+• Used for ports, DB creds, API keys, modes
+
+KEY ENVIRONMENT:
+• development
+• production
+
+NODE_ENV
+• Convention (not auto-set by Express)
+• Common values: "development", "production"
+• Used to enable/disable features
+
+CHECK ENV:
+• process.env.NODE_ENV
+• app.get('env')   // Express env (defaults to development)
+
+SET ENV VARIABLES
+• Mac/Linux:
+  NODE_ENV=development nodemon server.js
+• Windows (CMD):
+  set NODE_ENV=development && nodemon server.js
+
+.env / config.env FILE
+• Stores environment variables
+• One per line, UPPERCASE
+• Example:
+  NODE_ENV=development
+  PORT=3000
+  DB_PASSWORD=1234
+
+dotenv PACKAGE
+• Loads .env into process.env
+• Install: npm install dotenv
+• Use (server.js):
+  const dotenv = require('dotenv');
+  dotenv.config({ path: './config.env' });
+
+⚠️ LOAD ORDER (IMPORTANT)
+• dotenv.config() MUST run before app code
+• Correct:
+  dotenv.config();
+  const app = require('./app');
+
+USING ENV VARIABLES
+• Port:
+  const port = process.env.PORT || 3000;
+• Conditional middleware:
+  if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+  }
+
+GLOBAL ACCESS
+• process.env works in ALL files
+• Same Node process
+
+PACKAGE.JSON SCRIPTS
+• "start:dev": "NODE_ENV=development nodemon server.js"
+• "start:prod": "NODE_ENV=production node server.js"
+
+DO NOT PUSH TO GITHUB
+• .env / config.env
+• Add to .gitignore
+
+CORE IDEA
+• ENV VARIABLES = CONFIGURATION, NOT CODE
+
+

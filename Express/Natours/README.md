@@ -184,4 +184,4 @@ CORE IDEA
 • ENV VARIABLES = CONFIGURATION, NOT CODE
 
 
-**Notes about Introduction is written only in Book.
+**Notes about Introduction is written only in Book. 

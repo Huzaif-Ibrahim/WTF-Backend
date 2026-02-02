@@ -61,8 +61,22 @@ export const getTour = async (req, res) => {
     }
 }
 
-export const updateTour = (req, res) => {
+export const updateTour = async (req, res) => {
+    try {
+        const tour = await Tour.updateOne({_id: req.params.id}, req.body)
 
+        res.status(200).json({
+            success: true,
+            data: {
+                tour
+            }
+        })
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: error
+        })
+    }
 }
 
 export const deleteTour = (req, res) => {

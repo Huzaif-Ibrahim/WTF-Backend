@@ -3,16 +3,53 @@ import mongoose from 'mongoose'
 const tourSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'A name is required!'],
+        required: [true, 'A tour must have price'],
         unique: true,
+        trim: true
+    },
+    duration: {
+        type: Number,
+        required: [true, "A Tour must have duration!"]
+    },
+    maxGroupSize: {
+        type: Number,
+        required: [true, 'A Tour must have group size']
+    },
+    difficulty: {
+        type: Number,
+        required: [true, 'A tour must have difficulty']
+    },
+    ratingAverage: {
+        type: Number,
+        default: 3
+    },
+    ratingQuantity: {
+        type: Number,
+        default: 0
     },
     price: {
         type: Number,
-        required: [true, 'Price of tour is required!']
+        required: [true, 'A Tour must have price']
     },
-    rating: {
-        type: Number,
-        default: 3
+    priceDiscount: Number,  
+    imageCover: {
+        type: String,
+        required: [true, 'A Tour must have cover image']
+    },
+    images: [String],
+    summary: {
+        type: String,
+        required: [true, 'A Tour must have summary'],
+        trim: true
+    },
+    description: {
+        type: String,
+        trim: true
+    },
+    startDates: [Date],
+    createdAt: {
+        type: Date,
+        default: Date.now()
     }
 })
 

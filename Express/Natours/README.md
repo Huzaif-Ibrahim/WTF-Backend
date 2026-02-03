@@ -53,7 +53,7 @@ video 8: Responding to URL parameters.
 app.get('/api/v1/tours/:id'). In req.params is an object and in that we can get id - req.params.id
 
 app.get('/api/v1/tours/:id/:x{/:y}')
-In the above route, id and x is mandatory, but y is optional. 
+In the above route, id and x is required compulsary, but y is optional. 
 
 
 video 9: Handeling PATCH requests

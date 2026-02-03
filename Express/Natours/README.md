@@ -58,9 +58,9 @@ In the above route, id and x is required compulsary, but y is optional.
 
 video 9: Handeling PATCH requests
 -- We have 2 methods to update data - 1.PUT and 2.PATCH
-1.PUT is used when we expect that our application recieves the entire new updated object.
+1.PUT is used when we expect that our application recieves the entire new updated object.(Whole new object is required.)
 2.PATCH, we only expect the properties that should actually be updated on the object.
-We used PATCH and recieved tour id from params, data to update from body and updated the data.
+We used PATCH and recieved tour id from params, data to update from body and updated the data.(Will update only those data that is available/send through body. This is most used.)
 
 video 10: handeling delete Requests.
 

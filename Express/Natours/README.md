@@ -85,7 +85,7 @@ video 15: Implement the user Routes.
 video 16: Creating and Mounting Multiple Routers.
 Router refers to - express.Router()
 ex. const tourRouter = express.Router()
--- It is called as tour Router, and with the help of that router we can make multiple Routes, also, they are middlewares. We should use it as app.use('route/route'/tourRouter). It is called as MOUNTING ROUTERS.
+-- It is called as tour Router, and with the help of that router we can make multiple Routes, also, they are middlewares, We should use it as app.use('route/route',tourRouter). It is called as MOUNTING ROUTERS.
 
 In the above app.use, the first parameter is route which is common and in second parameter it is a ROUTER which is being MOUNTED and which contain route(the route which should be after the common route defined in first parameter of app.use) and controller.
 

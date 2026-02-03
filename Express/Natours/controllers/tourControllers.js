@@ -30,7 +30,8 @@ export const getAllTours = async (req, res) => {
         const tours = await Tour.find()
 
         res.status(200).json({
-            success: false,
+            success: true,
+            results: tours.length,
             data: {
                 tours
             }

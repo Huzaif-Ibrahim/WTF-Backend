@@ -27,7 +27,8 @@ export const addTour = async (req, res) => {
 
 export const getAllTours = async (req, res) => {
     try {
-        const tours = await Tour.find()
+        const tours = await Tour.find(req.query)
+        console.log(req.query)
 
         res.status(200).json({
             success: true,

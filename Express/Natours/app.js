@@ -7,6 +7,7 @@ const app = express()
 
 // Middlewares
 app.use(express.urlencoded({ extended: true }))
+app.set("query parser", "extended");
 app.use(express.json())
 // app.use(express.static('./public'))
 

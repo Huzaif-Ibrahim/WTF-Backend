@@ -100,3 +100,12 @@
 //     })
 
 // }
+
+
+
+// Mongoose functions .find() and .where() to find results based on query.
+// const tours = await Tour.find()
+        //               .where('duration')
+        //               .equals(req.query.duration)
+        //               .where('name')
+        //               .equals(req.query.name)

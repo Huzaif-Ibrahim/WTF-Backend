@@ -31,7 +31,7 @@ export const getAllTours = async (req, res) => {
         // Build Query
         // 1A. Filtering
         const queryObj = {...req.query}
-        const excludedFields = ['page', 'sort', 'limit']
+        const excludedFields = ['page', 'sort', 'limit', 'fields']
         excludedFields.map(el => delete queryObj[el])
 
         // 1B. Advanced Filtering

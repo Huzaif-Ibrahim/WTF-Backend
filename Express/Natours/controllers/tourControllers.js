@@ -29,17 +29,18 @@ export const getAllTours = async (req, res) => {
     try {
         console.log(req.query)
         // Build Query
-        // 1.Filtering
+        // 1A. Filtering
         const queryObj = {...req.query}
         const excludedFields = ['page', 'sort', 'limit']
         excludedFields.map(el => delete queryObj[el])
 
-        // 2.Advanced Filtering
+        // 1B. Advanced Filtering
         let queryString = JSON.stringify(queryObj)
         queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
         // From: {duration: {gte: 5}} To {duration: {'$gte': 5}}
 
         const query = Tour.find(JSON.parse(queryString))
+        console.log(query)
 
         // Execute Query
         const tours = await query

@@ -47,6 +47,17 @@ export const getAllTours = async (req, res) => {
             query = query.sort(sortBy)
             // In mongoose, for sort, the query should be - .sort('price maxGroupSize')
             // - for descending order.
+        } else {
+            query = query.sort('-createdAt')
+        }
+
+        // 3. Field Limiting
+        if(req.query.fields){
+            const fields = req.query.fields.split(',').join(' ')
+            query = query.select(fields)
+            // In mongoose .select('field1 field2 field3') is used to show only those fields and '-' is used to hide them
+        } else {
+            query = query.select('-__v')
         }
 
         // Execute Query

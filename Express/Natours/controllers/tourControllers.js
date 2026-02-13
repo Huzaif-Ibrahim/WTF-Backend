@@ -1,6 +1,24 @@
 import fs from 'fs'
 import Tour from '../models/tourModel.js'
 
+export const aliasTopCheapTours = (req, res, next) => {
+    console.log('ALias middleware rinning!')
+    req.customQuery = {
+        limit: '5',
+        sort: 'price,-ratingAverage'
+    }
+    next()
+}
+
+export const aliasTopTours = (req, res, next) => {
+    console.log('ALias middleware rinning!')
+    req.customQuery = {
+        limit: '5',
+        sort: '-ratingAverage,price'
+    }
+    next()
+}
+
 export const addTour = async (req, res) => {
     try {
         // const newTour = new Tour({})
@@ -27,13 +45,14 @@ export const addTour = async (req, res) => {
 
 export const getAllTours = async (req, res) => {
     try {
-        console.log(req.query)
+        const finalQuery = {...req.query, ...req.customQuery}
+        console.log(finalQuery)
         // Build Query
         
         // 1A. Filtering
         const queryObj = {...req.query}
         const excludedFields = ['page', 'sort', 'limit', 'fields']
-        excludedFields.map(el => delete queryObj[el])
+        excludedFields.forEach(el => delete queryObj[el])
 
         // 1B. Advanced Filtering
         let queryString = JSON.stringify(queryObj)
@@ -43,8 +62,8 @@ export const getAllTours = async (req, res) => {
         let query = Tour.find(JSON.parse(queryString))
 
         // 2. Sorting
-        if(req.query.sort){
-            const sortBy = req.query.sort.replaceAll(',', ' ')
+        if(finalQuery.sort){
+            const sortBy = finalQuery.sort.replaceAll(',', ' ')
             query = query.sort(sortBy)
             // In mongoose, for sort, the query should be - .sort('price maxGroupSize')
             // - for descending order.
@@ -53,8 +72,8 @@ export const getAllTours = async (req, res) => {
         }
 
         // 3. Field Limiting
-        if(req.query.fields){
-            const fields = req.query.fields.split(',').join(' ')
+        if(finalQuery.fields){
+            const fields = finalQuery.fields.split(',').join(' ')
             query = query.select(fields)
             // In mongoose .select('field1 field2 field3') is used to show only those fields and '-' is used to hide them
         } else {
@@ -62,11 +81,15 @@ export const getAllTours = async (req, res) => {
         }
 
         // 4. Pagination
-        const page = req.query.page * 1 || 1
-        const limit = req.query.limit * 1 || 5
+        const page = finalQuery.page * 1 || 1
+        const limit = finalQuery.limit * 1 || 100
         const skip = (page - 1) * limit
         query = query.skip(skip).limit(limit)
         // .skip(num) will skip the number of documents and .limit(num) will show only the specified number of dicuments.
+        if(finalQuery.page){
+            const totalDocuments = await Tour.countDocuments()
+            if (skip >= totalDocuments) throw new Error('This page doesn\'t exist')
+        }
 
         // Execute Query
         const tours = await query

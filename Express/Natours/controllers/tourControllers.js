@@ -29,6 +29,7 @@ export const getAllTours = async (req, res) => {
     try {
         console.log(req.query)
         // Build Query
+        
         // 1A. Filtering
         const queryObj = {...req.query}
         const excludedFields = ['page', 'sort', 'limit', 'fields']
@@ -59,6 +60,13 @@ export const getAllTours = async (req, res) => {
         } else {
             query = query.select('-__v')
         }
+
+        // 4. Pagination
+        const page = req.query.page * 1 || 1
+        const limit = req.query.limit * 1 || 5
+        const skip = (page - 1) * limit
+        query = query.skip(skip).limit(limit)
+        // .skip(num) will skip the number of documents and .limit(num) will show only the specified number of dicuments.
 
         // Execute Query
         const tours = await query

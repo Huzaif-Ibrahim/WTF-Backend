@@ -39,8 +39,15 @@ export const getAllTours = async (req, res) => {
         queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
         // From: {duration: {gte: 5}} To {duration: {'$gte': 5}}
 
-        const query = Tour.find(JSON.parse(queryString))
-        console.log(query)
+        let query = Tour.find(JSON.parse(queryString))
+
+        // 2. Sorting
+        if(req.query.sort){
+            const sortBy = req.query.sort.replaceAll(',', ' ')
+            query = query.sort(sortBy)
+            // In mongoose, for sort, the query should be - .sort('price maxGroupSize')
+            // - for descending order.
+        }
 
         // Execute Query
         const tours = await query

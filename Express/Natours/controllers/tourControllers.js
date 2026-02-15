@@ -1,8 +1,8 @@
-import fs from 'fs'
 import Tour from '../models/tourModel.js'
+import APIFeature from '../utils/apiFeatures.js'
 
 export const aliasTopCheapTours = (req, res, next) => {
-    console.log('ALias middleware rinning!')
+    console.log('Alias middleware rinning!')
     req.customQuery = {
         limit: '5',
         sort: 'price,-ratingAverage'
@@ -40,59 +40,18 @@ export const addTour = async (req, res) => {
             message: { error }
         })
     }
-
 }
 
 export const getAllTours = async (req, res) => {
     try {
-        const finalQuery = {...req.query, ...req.customQuery}
-        console.log(finalQuery)
-        // Build Query
-        
-        // 1A. Filtering
-        const queryObj = {...req.query}
-        const excludedFields = ['page', 'sort', 'limit', 'fields']
-        excludedFields.forEach(el => delete queryObj[el])
-
-        // 1B. Advanced Filtering
-        let queryString = JSON.stringify(queryObj)
-        queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
-        // From: {duration: {gte: 5}} To {duration: {'$gte': 5}}
-
-        let query = Tour.find(JSON.parse(queryString))
-
-        // 2. Sorting
-        if(finalQuery.sort){
-            const sortBy = finalQuery.sort.replaceAll(',', ' ')
-            query = query.sort(sortBy)
-            // In mongoose, for sort, the query should be - .sort('price maxGroupSize')
-            // - for descending order.
-        } else {
-            query = query.sort('-createdAt')
-        }
-
-        // 3. Field Limiting
-        if(finalQuery.fields){
-            const fields = finalQuery.fields.split(',').join(' ')
-            query = query.select(fields)
-            // In mongoose .select('field1 field2 field3') is used to show only those fields and '-' is used to hide them
-        } else {
-            query = query.select('-__v')
-        }
-
-        // 4. Pagination
-        const page = finalQuery.page * 1 || 1
-        const limit = finalQuery.limit * 1 || 100
-        const skip = (page - 1) * limit
-        query = query.skip(skip).limit(limit)
-        // .skip(num) will skip the number of documents and .limit(num) will show only the specified number of dicuments.
-        if(finalQuery.page){
-            const totalDocuments = await Tour.countDocuments()
-            if (skip >= totalDocuments) throw new Error('This page doesn\'t exist')
-        }
-
-        // Execute Query
-        const tours = await query
+        const finalQuery = {...req.query, ...req.customQuery} // Adds middleware object also for custom route.
+      
+        const query = new APIFeature(Tour.find(), finalQuery)
+            .filter()
+            .sort()
+            .fieldLimiting()
+            .pagination()
+        const tours = await query.query
 
         res.status(200).json({
             success: true,

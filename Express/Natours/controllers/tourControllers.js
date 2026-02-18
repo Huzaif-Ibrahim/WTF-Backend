@@ -126,3 +126,88 @@ export const deleteTour = async (req, res) => {
         })
     }
 }
+
+export const getTourStats = async (req, res) => {
+    try {
+
+        const tours = await Tour.aggregate([
+            {
+                $group: {
+                    _id: { $toUpper: '$difficulty' },
+                    numTours: { $sum: 1 },
+                    avgPrice: { $avg: '$price' },
+                    minPrice: { $min: '$price' },
+                    maxPrice: { $max: '$price' },
+                    avgRating: { $avg: '$ratingQuantity' },
+                    numRating: { $sum: '$ratingQuantity' }
+                }
+            },
+            {
+                $sort: { avgPrice: 1 }
+            }
+        ])
+
+        res.status(200).json({
+            success: true,
+            results: tours.length,
+            data: {
+                tours
+            }
+        }) 
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: error
+        })
+    }
+}
+
+export const getMonthlyPlan = async (req, res) => {
+    try {
+        const { year } = req.params
+
+        const tour = await Tour.aggregate([
+            {
+                $unwind: '$startDates'
+            },
+            {
+                $match: {
+                    startDates: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lte: new Date(`${year}-12-31`)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: '$startDates' },
+                    numTourStarts: { $sum: 1 },
+                    tours: { $push: '$name' }
+                }
+            },
+            {
+                $addFields: { month: '$_id' }
+            },
+            {
+                $sort: { numTourStarts: -1 }
+            },
+            {
+                $limit: 12
+            }
+        ])
+
+        res.status(200).json({
+            success: true,
+            results: tour.length,
+            data: {
+                tour
+            }
+        }) 
+        
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: error
+        })
+    }
+}

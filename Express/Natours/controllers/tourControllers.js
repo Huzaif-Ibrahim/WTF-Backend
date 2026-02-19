@@ -23,6 +23,7 @@ export const addTour = async (req, res) => {
     try {
         // const newTour = new Tour({})
         // newTour.save()
+        // console.log(req.body)
     
         const newTour = await Tour.create(req.body)
 
@@ -35,9 +36,10 @@ export const addTour = async (req, res) => {
         })
 
     } catch (error) {
+        console.log(error)
         res.status(400).json({
             success: false,
-            message: { error }
+            message: error
         })
     }
 }

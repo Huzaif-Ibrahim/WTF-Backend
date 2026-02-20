@@ -53,23 +53,41 @@ const tourSchema = new mongoose.Schema({
         type: Date,
         default: Date.now(),
         select: false
+    },
+    secretTour: {
+        type: Boolean,
+        default: false
     }
 }, { toJSON: {virtuals: true}, toObject: {virtuals: true}})
 
 
+// DOCUMENT MIDDLEWARE
 // Runs before saving document in db.
 tourSchema.pre('save', function(){
     this.slug = slugify(this.name, { lower: true })
 })
 // Runs after saving document in db
-tourSchema.post('save', function(doc){
-    console.log(doc)
+tourSchema.post('save', function(){
+    console.log(this)
 })
 
+// QUERY MIDDLEWARE
+tourSchema.pre(/^find/, function(){
+    this.find({ secretTour: { $ne: true }})
+})
 
-// tourSchema.virtual('durationWeeks').get(function() {
-//     return this.duration / 7
+// tourSchema.post('find', function(doc){
+//     console.log(this)
 // })
+
+// AGGREGATE MIDDLEWARE
+tourSchema.pre('aggregate', function(){
+    console.log(this)
+})
+
+tourSchema.virtual('durationWeeks').get(function() {
+    return this.duration / 7
+})
 
 
 const Tour = mongoose.model('Tour', tourSchema)

@@ -46,14 +46,40 @@ export const addTour = async (req, res) => {
 
 export const getAllTours = async (req, res) => {
     try {
-        const finalQuery = {...req.query, ...req.customQuery} // Adds middleware object also for custom route.
+        // const finalQuery = {...req.query, ...req.customQuery} // Adds middleware object also for custom route.
       
-        const query = new APIFeature(Tour.find(), finalQuery)
-            .filter()
-            .sort()
-            .fieldLimiting()
-            .pagination()
-        const tours = await query.query
+        // const query = new APIFeature(Tour.find(), finalQuery)
+        //     .filter()
+        //     .sort()
+        //     .fieldLimiting()
+        //     .pagination()
+        // const tours = await query.query
+        console.log('req.query : ',req.query)
+
+        let queryObj = {...req.query}
+
+        // Excluding fields
+        const excludeFields = ['limit','page','sort','fields']
+        excludeFields.forEach(element => {
+            delete queryObj[element]
+        });
+        console.log('After excluding fields: ', queryObj)
+
+        // Adding $ 
+        let queryString = JSON.stringify(queryObj)
+        queryString = queryString.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`)
+
+        console.log('After replacing $: ',JSON.parse(queryString))
+
+        let query = Tour.find(JSON.parse(queryString))
+
+        // Sorting 
+        if(req.query.sort){
+            const sortBy = req.query.sort.replaceAll(',',' ')
+            query = Tour.sort(sortBy)
+        } 
+
+        const tours = await query
 
         res.status(200).json({
             success: true,

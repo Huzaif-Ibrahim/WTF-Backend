@@ -6,7 +6,9 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A tour must have price'],
         unique: true,
-        trim: true
+        trim: true,
+        minlength: [10, "Characters must be more than or equal to 10"],
+        maxlength: [40, "Characters must be less than or equal to 40"]
     },
     slug: String,
     duration: {
@@ -19,11 +21,17 @@ const tourSchema = new mongoose.Schema({
     },
     difficulty: {
         type: String,
-        required: [true, 'A tour must have difficulty']
+        required: [true, 'A tour must have difficulty'],
+        enum: {
+            values: ['easy', 'medium', 'hard'],
+            message: "Difficulty must be either: easy, medium or difficult"
+        }
     },
     ratingAverage: {
         type: Number,
-        default: 3
+        default: 3,
+        min: [1, "Rating must be more than or equal to 1"],
+        max: [5, "Rating must be less than or equal to 5"]
     },
     ratingQuantity: {
         type: Number,
@@ -67,9 +75,9 @@ tourSchema.pre('save', function(){
     this.slug = slugify(this.name, { lower: true })
 })
 // Runs after saving document in db
-tourSchema.post('save', function(){
-    console.log(this)
-})
+// tourSchema.post('save', function(){
+//     console.log(this)
+// })
 
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function(){
@@ -82,8 +90,12 @@ tourSchema.pre(/^find/, function(){
 
 // AGGREGATE MIDDLEWARE
 tourSchema.pre('aggregate', function(){
-    console.log(this)
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true }}})
 })
+
+// tourSchema.post('aggregate', function(){
+//     console.log(this)
+// })
 
 tourSchema.virtual('durationWeeks').get(function() {
     return this.duration / 7

@@ -2,6 +2,8 @@ import express from 'express'
 import morgan from 'morgan'
 import tourRouter from './routes/tourRoutes.js'
 import userRouter from './routes/userRoutes.js'
+import AppError from './utils/apiFeatures.js'
+import { globalErrorhandler } from './controllers/errorControllers.js'
 
 const app = express()
 
@@ -29,5 +31,13 @@ if (process.env.NODE_ENV === 'production') {
 // Middleware to use ROUTER, and also this is called as MOUNTING OF ROUTER
 app.use('/api/v1/tours', tourRouter) // for '/api/v1/tours' we apply tourRouter middleware
 app.use('/api/v1/users', userRouter) // for '/api/v1/users' we apply userRouter middleware
+
+// Page not found error middleware. Need to be after above routes.
+app.use((req, res, next) => {
+    next(new AppError(`Couldn't find route ${req.originalUrl} in this server!`, 404)) // Directly jump to Error handler middleware and ignore other middlewares in queue
+})
+
+// Centralised error handler middlware.
+app.use(globalErrorhandler)
 
 export default app

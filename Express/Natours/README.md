@@ -1,4 +1,4 @@
-This file contains my personal notes which I have wrote in my notebook while following Jonas Schedman's backend course on Udemy.
+This file contains my personal notes which I have wrote in my notebook while following Jonas Schemedtmann's backend course on Udemy.
 
 video 2: WHAT IS EXPRESS?
 -- Express is a minimal node.js framework, a higher level of abstraction.(Which mean it is actually built on top of node)
@@ -20,7 +20,7 @@ Principles of REST API:
 
     2. Expose structures, resource-based URLs.
     -- https://www.natours.com/addNewTour this whole is URL and 'addNewTour' is an Endpoint or API Endpoint.
-    /getTour /updateTour /deleteTour /getToursById /deleteTourByUser, these all are considered as BAD ENDPOINTS because endpoints should be only contain resources(noun), and use HTTP methods for action.
+    /getTour /updateTour /deleteTour /getToursById /deleteTourByUser, these all are considered as BAD ENDPOINTS because endpoints should only contain resources(noun), and use HTTP methods for action.
 
     3. Use HTTP methods.
     -- For above examples for bad resource we can use-
@@ -39,7 +39,7 @@ Principles of REST API:
     5. Be stateless.
     -- Stateless RESTfull API: All states should be handelled on the client side. This means that each request must contain all the information necessary to process a certain response.
     The server should not have to remember the previous request.
-    Ex. of state: LoggedIn, CurrentPage etc server should nto remember this, client should request with these details included.
+    Ex. of state: LoggedIn, CurrentPage etc. server should nto remember this, client should request with these details included.
 
 
 video 6: Starting our API handelling GET requests.
@@ -60,7 +60,7 @@ video 9: Handeling PATCH requests
 -- We have 2 methods to update data - 1.PUT and 2.PATCH
 1.PUT is used when we expect that our application recieves the entire new updated object.(Whole new object is required.)
 2.PATCH, we only expect the properties that should actually be updated on the object.
-We used PATCH and recieved tour id from params, data to update from body and updated the data.(Will update only those data that is available/send through body. This is most used.)
+We used PATCH and recieved tour id from params, data to update from body and updated the data.(Will update only those data that is available/sent through body. PATCH is mostly used.)
 
 video 10: handeling delete Requests.
 
@@ -74,7 +74,7 @@ video 12(IMP): Middleware and Request-Response cycle.
 1.It starts with incoming requests with req-res object.
 2.Executes the middlewares that are in middleware stack.
 3.Finally send the response to finish the cycle.
-(Every controller(final handler/function which sends res.send after all the middlewares) is technically a middleware, but not every middleware is a controller.)
+(Every controller(final handler/function which sends res.send after all the middlewares) is technically a middleware, but not every middleware is a controller. Controller is a final middleware)
 
 video 13: Creating Our own Middlewares.
 video 14: Using third-party middlewares.
@@ -85,7 +85,11 @@ video 15: Implement the user Routes.
 video 16: Creating and Mounting Multiple Routers.
 Router refers to - express.Router()
 ex. const tourRouter = express.Router()
--- It is called as tour Router, and with the help of that router we can make multiple Routes, also, they are middlewares, We should use it as app.use('route/route',tourRouter). It is called as MOUNTING ROUTERS.
+-- It is called as tour Router, and with the help of that router we can make multiple Routes, also, they are middlewares, We should use it as app.use('/route/route',tourRouter). It is called as MOUNTING ROUTERS.
+ex.  tourRouter
+      .route('/')
+      .get(getAllTours)
+      .post(addTour)
 
 In the above app.use, the first parameter is route which is common and in second parameter it is a ROUTER which is being MOUNTED and which contain route(the route which should be after the common route defined in first parameter of app.use) and controller.
 
@@ -100,6 +104,10 @@ video 17: Better file structure
 
 video 18: Param Middleware
 -- It is used to check the param and run that controller only if that param is present in the url. Basically, it is a middleware that will only run before the controller which contain the specified param in it's url
+ex. tourRouter.param('id', (req, res, next, val) => {
+      console.log(`The tour ID is ${val}`)
+      next()
+    })
 
 video 19: Chaining Multiple Middleware Functions
 -- When we want to run a middleware before a function only to a specific route then we an write the middleware function before the main controller.
